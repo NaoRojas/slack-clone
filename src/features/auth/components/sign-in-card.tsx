@@ -7,6 +7,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
+import { FaGithub } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc'
 
 export const SignInCard = () => {
   return (
@@ -38,6 +41,35 @@ export const SignInCard = () => {
             Continue
           </Button>
         </form>
+        <Separator />
+        <div className="flex flex-col gap-y-2.5">
+          <Button
+            type="button"
+            className="w-full"
+            size="lg"
+            variant="outline"
+            disabled={false}
+          >
+            <FcGoogle className="size-5" />
+            Continue with Google
+          </Button>
+          <Button
+            type="button"
+            className="w-full"
+            size="lg"
+            variant="outline"
+            disabled={false}
+          >
+            <FaGithub className="size-5" />
+            Continue with Github
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Don&apos;t have an account? &nbsp;
+          <span className="text-sky-700 hover:underline cursor-pointer">
+            Sign Up
+          </span>
+        </p>
       </CardContent>
     </Card>
   )
