@@ -11,8 +11,8 @@ import { Separator } from '@/components/ui/separator'
 import { FaGithub } from 'react-icons/fa'
 import { FcGoogle } from 'react-icons/fc'
 import { useAuthActions } from '@convex-dev/auth/react'
-
 import { SignInFlow } from '../types'
+import { TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 interface SignInCardProps {
   setState: (state: SignInFlow) => void
@@ -21,10 +21,28 @@ interface SignInCardProps {
 export const SignInCard = ({ setState }: SignInCardProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [pending, setPending] = useState(false)
   const { signIn } = useAuthActions()
+  const [error, setError] = useState('')
 
   const handleProviderSignIn = (value: 'github' | 'google') => {
-    signIn(value)
+    setPending(true)
+
+    signIn(value).finally(() => {
+      setPending(false)
+    })
+  }
+
+  const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setPending(true)
+    signIn('password', { email, password, flow: 'signIn' })
+      .catch(() => {
+        setError('Invalid email or password')
+      })
+      .finally(() => {
+        setPending(false)
+      })
   }
 
   return (
@@ -35,11 +53,17 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
           Use your email or another serivce to continue
         </CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive mb-6">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
 
       <CardContent className="space-y-5 px-0 pb-0">
-        <form action="" className="space-y-2.5">
+        <form action="" className="space-y-2.5" onSubmit={onPasswordSignIn}>
           <Input
-            disabled={false}
+            disabled={pending}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
@@ -47,14 +71,14 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             required
           />
           <Input
-            disabled={false}
+            disabled={pending}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
             required
           />
-          <Button type="submit" className="w-full" size="lg" disabled={false}>
+          <Button type="submit" className="w-full" size="lg" disabled={pending}>
             Continue
           </Button>
         </form>
@@ -65,7 +89,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             className="w-full"
             size="lg"
             variant="outline"
-            disabled={false}
+            disabled={pending}
           >
             <FcGoogle className="size-5" />
             Continue with Google
@@ -76,7 +100,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             size="lg"
             variant="outline"
             onClick={() => handleProviderSignIn('github')}
-            disabled={false}
+            disabled={pending}
           >
             <FaGithub className="size-5" />
             Continue with Github
