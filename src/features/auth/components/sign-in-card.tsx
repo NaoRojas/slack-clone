@@ -89,7 +89,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             className="w-full"
             size="lg"
             variant="outline"
-            disabled={false}
+            disabled={pending}
           >
             <FcGoogle className="size-5" />
             Continue with Google
@@ -100,7 +100,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             size="lg"
             variant="outline"
             onClick={() => handleProviderSignIn('github')}
-            disabled={false}
+            disabled={pending}
           >
             <FaGithub className="size-5" />
             Continue with Github
