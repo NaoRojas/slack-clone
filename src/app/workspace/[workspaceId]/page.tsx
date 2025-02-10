@@ -4,13 +4,12 @@ interface WorkspaceIdPageProps {
   }
 }
 
-const WorskspaceIdPage = ({ params }: WorkspaceIdPageProps) => {
+export default async function WorkspacePage({ params }: WorkspaceIdPageProps) {
+  const { workspaceId } = await params
   return (
     <div>
       <h1>Workspace ID Page</h1>
-      {params.workspaceId}
+      <p>Workspace ID: {workspaceId}</p>
     </div>
   )
 }
-
-export default WorskspaceIdPage
