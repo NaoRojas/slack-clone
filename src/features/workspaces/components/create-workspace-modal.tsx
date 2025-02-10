@@ -9,22 +9,27 @@ import { useCreateWorkspaceModal } from '../store/use-create-workspace-modal'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useCreateWorkspace } from '../api/use-create-workspace'
+import { useState } from 'react'
 export const CreateWorkspaceModal = () => {
   const [open, setOpen] = useCreateWorkspaceModal()
   const { mutate, isLoading } = useCreateWorkspace()
+
+  const [name, setName] = useState('')
 
   const handleClose = () => {
     setOpen(false)
     // TODO reset form
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
       const data = mutate(
-        { name: 'test' },
+        { name },
         {
           onSuccess: (data) => {
             // TODO Redirect to workspace
+            console.log(data)
           },
           onError: () => {
             // TODO show toast error
@@ -45,17 +50,18 @@ export const CreateWorkspaceModal = () => {
         <DialogHeader>
           <DialogTitle>Add a workspace</DialogTitle>
         </DialogHeader>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <Input
-            value=""
-            disabled={false}
+            value={name}
+            disabled={isLoading}
+            onChange={(e) => setName(e.target.value)}
             required
             autoFocus
             minLength={3}
             placeholder="Workspace name e.g My workspace"
           />
           <div className="flex justify-end">
-            <Button disabled={false} variant="default">
+            <Button disabled={isLoading} variant="default">
               Create
             </Button>
           </div>
