@@ -8,13 +8,31 @@ import {
 import { useCreateWorkspaceModal } from '../store/use-create-workspace-modal'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-
+import { useCreateWorkspace } from '../api/use-create-workspace'
 export const CreateWorkspaceModal = () => {
   const [open, setOpen] = useCreateWorkspaceModal()
+  const { mutate } = useCreateWorkspace()
 
   const handleClose = () => {
     setOpen(false)
     // TODO reset form
+  }
+
+  const handleSubmit = () => {
+    mutate(
+      { name: 'test' },
+      {
+        onSuccess: (data) => {
+          // TODO Redirect to workspace
+        },
+        onError: () => {
+          // TODO show toast error
+        },
+        onSettled: () => {
+          // TODO reset form
+        },
+      }
+    )
   }
 
   return (
