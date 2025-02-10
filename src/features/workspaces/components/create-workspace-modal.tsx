@@ -10,7 +10,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useCreateWorkspace } from '../api/use-create-workspace'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 export const CreateWorkspaceModal = () => {
+  const router = useRouter()
   const [open, setOpen] = useCreateWorkspaceModal()
   const { mutate, isLoading } = useCreateWorkspace()
 
@@ -18,18 +20,19 @@ export const CreateWorkspaceModal = () => {
 
   const handleClose = () => {
     setOpen(false)
+    setName('')
     // TODO reset form
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
-      const data = mutate(
+      mutate(
         { name },
         {
-          onSuccess: (data) => {
-            // TODO Redirect to workspace
-            console.log(data)
+          onSuccess: (id) => {
+            router.push(`/workspace/${id}`)
+            handleClose()
           },
           onError: () => {
             // TODO show toast error
